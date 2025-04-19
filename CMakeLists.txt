@@ -8,7 +8,7 @@ message( STATUS "Using CMake ${CMAKE_VERSION}" )
 file( TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH )
 
 if ( EXISTS "${LOC_PATH}" )
-    message( FATAL_ERROR "You cannot build in the source directory. Please use a build subdirectory." )
+  message( FATAL_ERROR "You cannot build in the source directory. Please use a build subdirectory." )
 endif()
 
 # Add paths to modules
@@ -20,14 +20,16 @@ set( CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE ON )
 # Output compile commands to compile_commands.json (for debugging CMake issues)
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # Build universal lib on macOS
 # Note that CMAKE_OSX_ARCHITECTURES must be set before project().
 if ( APPLE )
-    set( CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "" )
+  set( CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "" )
 endif()
 
 # Main project information
-project( GDExtensionTemplate
+project( OpusLoader
     LANGUAGES
         CXX
     VERSION
@@ -46,7 +48,7 @@ target_compile_features( ${PROJECT_NAME}
 # For macOS, we build a universal library (both arm64 and x86_64).
 set( LIB_ARCH ${CMAKE_SYSTEM_PROCESSOR} )
 if ( APPLE )
-    set( LIB_ARCH "universal" )
+  set( LIB_ARCH "universal" )
 endif()
 
 # LIB_DIR is where the actual library ends up. This is used in both the build directory and the
@@ -67,11 +69,18 @@ set_target_properties( ${PROJECT_NAME}
         LIBRARY_OUTPUT_DIRECTORY "${BUILD_OUTPUT_DIR}/${LIB_DIR}"
 )
 
-if( NOT DEFINED CMAKE_DEBUG_POSTFIX )
+if( NOT DEFINED CMAKE_DEBUG_POSTFIX AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+  if (NOT ANDROID)
     set_target_properties( ${PROJECT_NAME}
         PROPERTIES
             DEBUG_POSTFIX "-d"
     )
+  else()
+    set_target_properties( ${PROJECT_NAME}
+        PROPERTIES
+            LIBRARY_OUTPUT_NAME "${PROJECT_NAME}-d"
+    )
+  endif()
 endif()
 
 # Copy over additional files from the support_files directory
@@ -121,7 +130,7 @@ include( ClangFormat )
 # godot-cpp
 # From here: https://github.com/godotengine/godot-cpp
 if ( NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/extern/godot-cpp/Makefile" )
-    message(
+  message(
         FATAL_ERROR
             "[${PROJECT_NAME}] The godot-cpp submodule was not downloaded. Please update submodules: git submodule update --init --recursive."
     )
@@ -136,7 +145,23 @@ set_target_properties( godot-cpp
         CXX_VISIBILITY_PRESET hidden    # visibility needs to be the same as the main library
 )
 
+set(BUILD_SHARED_LIBS OFF)
+option(BUILD_TESTING "" OFF) # set didn't work
+
+set(OP_DISABLE_FLOAT_API ON)
+set(OP_DISABLE_HTTP ON)
+set(OP_DISABLE_EXAMPLES ON)
+set(OP_DISABLE_DOCS ON)
+
+# opus, ogg, opusfile
+add_subdirectory( extern/opus )
+add_subdirectory( extern/ogg )
+add_subdirectory( extern/opusfile )
+
 target_link_libraries( ${PROJECT_NAME}
     PRIVATE
         godot-cpp
+        ogg
+        opus
+        opusfile
 )

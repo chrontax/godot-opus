@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6fg8cx5esdif"]
+
+[ext_resource type="AudioStream" uid="uid://dwlea3idh85wv" path="res://Andy_G._Cohen_-_Space.opus" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://d3yiy3xahwm31" path="res://test.gd" id="2_0xm2m"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer"]
+stream = ExtResource("1_ig7tw")
+autoplay = true
+script = ExtResource("2_0xm2m")

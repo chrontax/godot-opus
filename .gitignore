@@ -1,2 +1,15 @@
 CMakeLists.txt.user
 .vscode/settings.json
+
+# lsp
+.cache
+
+# builds
+build
+build-android
+
+# godot
+.godot
+.import
+export.cfg
+export_credentials.cfg

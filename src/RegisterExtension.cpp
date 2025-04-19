@@ -5,12 +5,18 @@
 #include "godot_cpp/core/class_db.hpp"
 #include "godot_cpp/core/defs.hpp"
 #include "godot_cpp/godot.hpp"
+#include <godot_cpp/classes/ref.hpp>
+#include <godot_cpp/classes/resource_format_loader.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/wrapped.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 
-#include "Example.h"
-#include "GDExtensionTemplate.h"
+#include "OpusLoader.hpp"
 
 /// @file
 /// Register our classes with Godot.
+
+static Ref<OpusLoader> opus_loader;
 
 namespace
 {
@@ -21,18 +27,16 @@ namespace
     /// @see GDExtensionInit
     void initializeExtension( godot::ModuleInitializationLevel p_level )
     {
+        godot::UtilityFunctions::print( "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" );
         if ( p_level != godot::MODULE_INITIALIZATION_LEVEL_SCENE )
         {
             return;
         }
 
-        godot::ClassDB::register_class<ExampleRef>();
-        godot::ClassDB::register_class<ExampleMin>();
-        godot::ClassDB::register_class<Example>();
-        godot::ClassDB::register_class<ExampleVirtual>( true );
-        godot::ClassDB::register_abstract_class<ExampleAbstract>();
+        GDREGISTER_CLASS( OpusLoader );
 
-        godot::ClassDB::register_class<GDExtensionTemplate>();
+        opus_loader.instantiate();
+        godot::ResourceLoader::get_singleton()->add_resource_format_loader( opus_loader.ptr() );
     }
 
     /// @brief Called by Godot to let us do any cleanup.
@@ -44,6 +48,9 @@ namespace
         {
             return;
         }
+
+        godot::ResourceLoader::get_singleton()->remove_resource_format_loader( opus_loader.ptr() );
+        opus_loader.unref();
     }
 }
 

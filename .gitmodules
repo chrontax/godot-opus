@@ -1,3 +1,12 @@
 [submodule "extern/godot-cpp"]
 	path = extern/godot-cpp
 	url = https://github.com/godotengine/godot-cpp.git
+[submodule "extern/opusfile"]
+	path = extern/opusfile
+	url = https://github.com/xiph/opusfile.git
+[submodule "extern/opus"]
+	path = extern/opus
+	url = https://github.com/xiph/opus.git
+[submodule "extern/ogg"]
+	path = extern/ogg
+	url = https://github.com/xiph/ogg.git

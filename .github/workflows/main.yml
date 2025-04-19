@@ -66,22 +66,23 @@ jobs:
         run: >
           mkdir GDExtension-build
 
-          cmake
+
+      - name: Build
+        run: >
+          cmake --build GDExtension-build
+          -DCMAKE_POLICY_VERSION_MINIMUM=3.5
           -B GDExtension-build
           -G "Ninja"
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           --install-prefix ${{ github.workspace }}/install-${{ matrix.build_type }}
           .
 
-      - name: Build
-        run: cmake --build GDExtension-build
-
       - name: Install
         run: cmake --install GDExtension-build
 
       - name: Upload artifact (Debug)
         if: matrix.build_type == 'Debug'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-Debug
           path: |
@@ -89,7 +90,7 @@ jobs:
 
       - name: Upload artifact (Release)
         if: matrix.build_type == 'Release'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-Release
           path: |
