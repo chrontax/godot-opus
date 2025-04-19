@@ -153,6 +153,9 @@ set(OP_DISABLE_HTTP ON)
 set(OP_DISABLE_EXAMPLES ON)
 set(OP_DISABLE_DOCS ON)
 
+set(Ogg_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/ogg")
+set(Opus_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/opus")
+
 # opus, ogg, opusfile
 add_subdirectory( extern/opus )
 add_subdirectory( extern/ogg )
