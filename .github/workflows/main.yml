@@ -71,6 +71,8 @@ jobs:
           -G "Ninja"
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+          -DOgg_DIR=./extern/ogg
+          -DOpus_DIR=./extern/opus
           --install-prefix ${{ github.workspace }}/install-${{ matrix.build_type }}
           .
 
