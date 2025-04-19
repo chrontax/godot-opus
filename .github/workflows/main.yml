@@ -3,8 +3,8 @@ name: Main
 on:
   push:
     paths-ignore:
-      - '.gitignore'
-      - '*.md'
+      - ".gitignore"
+      - "*.md"
 
 jobs:
   lint:
@@ -15,18 +15,18 @@ jobs:
       - name: Run clang-format style check
         uses: jidicula/clang-format-action@v4.9.0
         with:
-          clang-format-version: '15'
-          exclude-regex: 'extern'
+          clang-format-version: "15"
+          exclude-regex: "extern"
 
   build:
     strategy:
       fail-fast: false
       matrix:
-        build_type: ['Debug', 'Release']
+        build_type: ["Debug", "Release"]
         config:
-          - { name: '🍏 macOS Clang', os: macos-latest }
-          - { name: '🐧 Linux GCC', os: ubuntu-latest }
-          - { name: '🪟 Windows MSVC', os: windows-latest }
+          - { name: "🍏 macOS Clang", os: macos-latest }
+          - { name: "🐧 Linux GCC", os: ubuntu-latest }
+          - { name: "🪟 Windows MSVC", os: windows-latest }
 
     name: 🛠 Build / ${{ matrix.config.name }} (${{ matrix.build_type }})
     runs-on: ${{ matrix.config.os }}
@@ -59,23 +59,23 @@ jobs:
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          max-size: '10G'
+          max-size: "10G"
           key: ${{ matrix.config.os }}-${{ matrix.build_type }}
 
       - name: Configure
         run: >
           mkdir GDExtension-build
 
-
-      - name: Build
-        run: >
-          cmake --build GDExtension-build
-          -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+          cmake
           -B GDExtension-build
           -G "Ninja"
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DCMAKE_POLICY_VERSION_MINIMUM=3.5
           --install-prefix ${{ github.workspace }}/install-${{ matrix.build_type }}
           .
+
+      - name: Build
+        run: cmake --build GDExtension-build
 
       - name: Install
         run: cmake --install GDExtension-build
